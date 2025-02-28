@@ -61,5 +61,50 @@
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
 
     @livewireScripts
+
+    <script>
+      // Update Quantity
+      document.querySelectorAll('.update-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+              const productId = this.getAttribute('data-id');
+              const qty = document.querySelector(`input[data-id="${productId}"]`).value;
+              
+              fetch('/update-cart', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                  },
+                  body: JSON.stringify({ prod_id: productId, prod_qty: qty })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  alert(data.status);
+                  location.reload(); 
+              });
+          });
+      });
+  
+      // Delete Product
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+              const productId = this.getAttribute('data-id');
+              
+              fetch('/delete-cart-item', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                  },
+                  body: JSON.stringify({ prod_id: productId })
+              })
+              .then(response => response.json())
+              .then(data => {
+                  alert(data.status);
+                  location.reload(); 
+              });
+          });
+      });
+  </script>
 </body>
 </html>
